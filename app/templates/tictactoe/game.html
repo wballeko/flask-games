@@ -10,8 +10,13 @@
     {% for row in range(3) %}
         <tr>
             {% for col in range(3) %}
-                <td>
+                {% if game.tictactoe.winning_cells and (row,col) in game.tictactoe.winning_cells %}
+                    <td style="font-weight: bolder">
+                {% else %}
+                    <td>
+                {% endif %}
                     {% if game.tictactoe.fields[row][col].value != "empty" %}
+
                         {% if game.tictactoe.fields[row][col].value == "cross" %}
                             X
                         {% elif game.tictactoe.fields[row][col].value == "naught" %}
@@ -32,6 +37,7 @@
 <p>Naught: {{ game.player_2_name }}</p>
 <p>Current: {{ game.current_turn_name }}</p>
 <p>Game State: {{ game.tictactoe.state.value }}</p>
-<p>Game State: {{ game.winner_name }}</p>
+<p>Winner name: {{ game.winner_name }}</p>
+<p>Winning Cells: {{ game.tictactoe.winning_cells }}</p>
 </body>
 </html>
