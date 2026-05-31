@@ -1,0 +1,29 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Game - TicTacToe</title>
+</head>
+<body>
+    <h1>TicTacToe</h1>
+    <h2>Create Game</h2>
+    <form action="./create" method="POST">
+        <label>
+            <input type="text" name="player_1_name" placeholder="Enter player name 1">
+        </label>
+        <label>
+            <input type="text" name="player_2_name" placeholder="Enter player name 2">
+        </label>
+        <input type="submit" value="Create">
+    </form>
+    <h2>Active Games</h2>
+    <ul>
+        <li><a href="/<int:id>">Game ID - Alice Bob</a></li>
+    </ul>
+    <h2>Finished Games</h2>
+    <ul>
+        <li>Game ID - Winner: Alice - Loser: Bob</li>
+        <li>Game ID - Draw - Alice Bob</li>
+    </ul>
+</body>
+</html>
