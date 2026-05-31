@@ -19,7 +19,7 @@
                         {% endif %}
                     {% else %}
                         <form method="POST"
-                              action="{{ url_for('.turn', id=game.id, row=row, col=col) }}">
+                              action="{{ url_for('.turn', game_id=game.id, row=row, col=col) }}">
                             <button type="submit"></button>
                         </form>
                     {% endif %}

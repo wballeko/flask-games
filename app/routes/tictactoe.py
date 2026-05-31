@@ -13,8 +13,11 @@ tictactoe_routes = Blueprint(
 
 repo = TicTacToeRepository()
 
+
 def get_game_or_404(game_id: int) -> TicTacToeGame:
-    game = get_game_or_404(game_id)
+    game = repo.get_by_id(game_id)
+    if not game:
+        abort(404)
     return game
 
 
@@ -42,7 +45,7 @@ def create():
         tictactoe=tictactoe
     )
     game = repo.save(new_game)
-    return redirect(url_for('.details', id=game.id))
+    return redirect(url_for('.details', game_id=game.id))
 
 
 @tictactoe_routes.route('/<int:game_id>/turn/<int:row>/<int:col>', methods=['POST'])
@@ -50,4 +53,4 @@ def turn(game_id, row, col):
     game = get_game_or_404(game_id)
     game.tictactoe.apply_turn(row, col)
     game = repo.save(game)
-    return redirect(url_for('.details', id=game.id))
+    return redirect(url_for('.details', game_id=game.id))
