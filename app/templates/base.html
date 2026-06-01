@@ -4,11 +4,11 @@
     {% block head %}
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-
+        <link rel="stylesheet" href="{{ url_for('static', filename='dist/app.css') }}" />
         <title>{% block title %} - Flask Games{% endblock %}</title>
     {% endblock %}
 </head>
-<body>
+<body {% block body_attributes %}{% endblock %}>
 <main>
     {% block content %}
     {% endblock %}

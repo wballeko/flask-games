@@ -1,1 +1,6 @@
 ﻿@import "tailwindcss";
+
+.link {
+    @apply text-blue-600 underline
+}
+

@@ -2,8 +2,8 @@
 {% block title %}Games{{ super() }}{% endblock %}
 {% block head %}{{ super() }}{% endblock %}
 {% block content %}
-    <h1>Hello World</h1>
+    <h1 class="text-3xl">Flask Games</h1>
     <ul>
-        <li><a href="{{ url_for('tictactoe.index') }}">tictactoe</a></li>
+        <li><a class="link" href="{{ url_for('tictactoe.index') }}">TicTacToe</a></li>
     </ul>
 {% endblock %}
