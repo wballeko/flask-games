@@ -1,43 +1,39 @@
-﻿<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Game - TicTacToe</title>
-</head>
-<body>
-<h1>TicTacToe</h1>
-<table>
-    {% for row in range(3) %}
-        <tr>
-            {% for col in range(3) %}
-                {% if game.tictactoe.winning_cells and (row,col) in game.tictactoe.winning_cells %}
-                    <td style="font-weight: bolder">
-                {% else %}
-                    <td>
-                {% endif %}
-                    {% if game.tictactoe.fields[row][col].value != "empty" %}
-
-                        {% if game.tictactoe.fields[row][col].value == "cross" %}
-                            X
-                        {% elif game.tictactoe.fields[row][col].value == "naught" %}
-                            O
-                        {% endif %}
-                    {% else %}
-                        <form method="POST"
-                              action="{{ url_for('.turn', game_id=game.id, row=row, col=col) }}">
-                            <button type="submit"></button>
-                        </form>
+{% extends "base.html" %}
+{% block title %}TicTacToe{{ super() }}{% endblock %}
+{% block head %}{{ super() }}{% endblock %}
+{% block content %}
+    <h1>TicTacToe</h1>
+    <table>
+        {% for row in range(3) %}
+            <tr>
+                {% for col in range(3) %}
+                    {% if game.tictactoe.winning_cells and (row,col) in game.tictactoe.winning_cells %}
+                        <td style="font-weight: bolder">
+                            {% else %}
+                        <td>
                     {% endif %}
+                {% if game.tictactoe.fields[row][col].value != "empty" %}
+                    {% if game.tictactoe.fields[row][col].value == "cross" %}
+                        X
+                    {% elif game.tictactoe.fields[row][col].value == "naught" %}
+                        O
+                    {% endif %}
+                {% else %}
+                    <form method="POST"
+                          action="{{ url_for('.turn', game_id=game.id, row=row, col=col) }}">
+                        <button type="submit"></button>
+                    </form>
+                {% endif %}
                 </td>
-            {% endfor %}
-        </tr>
-    {% endfor %}
-</table>
-<p>Cross: {{ game.player_1_name }}</p>
-<p>Naught: {{ game.player_2_name }}</p>
-<p>Current: {{ game.current_turn_name }}</p>
-<p>Game State: {{ game.tictactoe.state.value }}</p>
-<p>Winner name: {{ game.winner_name }}</p>
-<p>Winning Cells: {{ game.tictactoe.winning_cells }}</p>
-</body>
-</html>
+                {% endfor %}
+            </tr>
+        {% endfor %}
+    </table>
+    <p>Cross: {{ game.player_1_name }}</p>
+    <p>Naught: {{ game.player_2_name }}</p>
+    <p>Current: {{ game.current_turn_name }}</p>
+    <p>Game State: {{ game.tictactoe.state.value }}</p>
+    <p>Winner name: {{ game.winner_name }}</p>
+    <p>Winning Cells: {{ game.tictactoe.winning_cells }}</p>
+    <a href="{{ url_for('.index') }}">Return to lobby</a>
+{% endblock %}

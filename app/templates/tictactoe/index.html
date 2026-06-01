@@ -1,38 +1,35 @@
-﻿<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Game - TicTacToe</title>
-</head>
-<body>
-<h1>TicTacToe</h1>
-<h2>Create Game</h2>
-<form action="./create" method="POST">
-    <label>
-        <input type="text" name="player_1_name" placeholder="Enter player name 1">
-    </label>
-    <label>
-        <input type="text" name="player_2_name" placeholder="Enter player name 2">
-    </label>
-    <input type="submit" value="Create">
-</form>
-<h2>Active Games</h2>
-<ul>
-    {% for game in games %}
-        {% if game.tictactoe.state.value == "in_progress" %}
-            <li><a href="./{{ game.id }}">Game {{ game.id }} - {{ game.player_1_name }} {{ game.player_2_name }}</a>
-            </li>
-        {% endif %}
-    {% endfor %}
-</ul>
-<h2>Finished Games</h2>
-<ul>
-    {% for game in games %}
-        {% if game.tictactoe.state.value != "in_progress" %}
-            <li><a href="./{{ game.id }}">Game {{ game.id }} - {{ game.player_1_name }} {{ game.player_2_name }}</a>
-            </li>
-        {% endif %}
-    {% endfor %}
-</ul>
-</body>
-</html>
+{% extends "base.html" %}
+{% block title %}TicTacToe{{ super() }}{% endblock %}
+{% block head %}{{ super() }}{% endblock %}
+{% block content %}
+    <h1>TicTacToe</h1>
+    <h2>Create Game</h2>
+    <form action="./create" method="POST">
+        <label>
+            <input type="text" name="player_1_name" placeholder="Enter player name 1">
+        </label>
+        <label>
+            <input type="text" name="player_2_name" placeholder="Enter player name 2">
+        </label>
+        <input type="submit" value="Create">
+    </form>
+    <h2>Active Games</h2>
+    <ul>
+        {% for game in games %}
+            {% if game.tictactoe.state.value == "in_progress" %}
+                <li><a href="{{ url_for('.details', game_id=game.id) }}">Game {{ game.id }} - {{ game.player_1_name }} {{ game.player_2_name }}</a>
+                </li>
+            {% endif %}
+        {% endfor %}
+    </ul>
+    <h2>Finished Games</h2>
+    <ul>
+        {% for game in games %}
+            {% if game.tictactoe.state.value != "in_progress" %}
+                <li><a href="{{ url_for('.details', game_id=game.id) }}">Game {{ game.id }} - {{ game.player_1_name }} {{ game.player_2_name }}
+                    - {{ game.winner_name }}</a>
+                </li>
+            {% endif %}
+        {% endfor %}
+    </ul>
+{% endblock %}
