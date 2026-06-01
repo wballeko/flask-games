@@ -2,38 +2,65 @@
 {% block title %}TicTacToe{{ super() }}{% endblock %}
 {% block head %}{{ super() }}{% endblock %}
 {% block content %}
-    <h1>TicTacToe</h1>
-    <table>
-        {% for row in range(3) %}
-            <tr>
-                {% for col in range(3) %}
-                    {% if game.tictactoe.winning_cells and (row,col) in game.tictactoe.winning_cells %}
-                        <td style="font-weight: bolder">
+    <div class="container mx-auto">
+        <div class="card my-4"><h1 class="text-3xl">TicTacToe</h1></div>
+        <div class="card mb-4">
+            <div class="mx-auto grid w-fit grid-cols-3 gap-2 rounded-xl bg-slate-300 p-2 shadow-lg">
+                {% for row in range(3) %}
+                    {% for col in range(3) %}
+
+                        {% set cell = game.tictactoe.fields[row][col].value %}
+                        {% set is_winner = game.tictactoe.winning_cells and (row, col) in game.tictactoe.winning_cells %}
+
+                        <div
+                                class="
+                    flex h-24 w-24 items-center justify-center
+                    rounded-lg text-5xl font-bold shadow-sm
+                    {% if is_winner %}
+                        bg-emerald-200 ring-2 ring-emerald-500
+                    {% else %}
+                        bg-white
+                    {% endif %}
+                "
+                        >
+
+                            {% if cell == "cross" %}
+                                <span class="text-blue-600">X</span>
+
+                            {% elif cell == "naught" %}
+                                <span class="text-red-600">O</span>
+
                             {% else %}
-                        <td>
-                    {% endif %}
-                {% if game.tictactoe.fields[row][col].value != "empty" %}
-                    {% if game.tictactoe.fields[row][col].value == "cross" %}
-                        X
-                    {% elif game.tictactoe.fields[row][col].value == "naught" %}
-                        O
-                    {% endif %}
-                {% else %}
-                    <form method="POST"
-                          action="{{ url_for('.turn', game_id=game.id, row=row, col=col) }}">
-                        <button type="submit"></button>
-                    </form>
-                {% endif %}
-                </td>
+                                <form
+                                        method="POST"
+                                        action="{{ url_for('.turn', game_id=game.id, row=row, col=col) }}"
+                                >
+                                    <button
+                                            type="submit"
+                                            class="
+                                h-24 w-24 rounded-lg
+                                transition
+                                hover:bg-slate-100
+                                active:scale-95
+                            "
+                                    ></button>
+                                </form>
+                            {% endif %}
+
+                        </div>
+
+                    {% endfor %}
                 {% endfor %}
-            </tr>
-        {% endfor %}
-    </table>
-    <p>Cross: {{ game.player_1_name }}</p>
-    <p>Naught: {{ game.player_2_name }}</p>
-    <p>Current: {{ game.current_turn_name }}</p>
-    <p>Game State: {{ game.tictactoe.state.value }}</p>
-    <p>Winner name: {{ game.winner_name }}</p>
-    <p>Winning Cells: {{ game.tictactoe.winning_cells }}</p>
-    <a href="{{ url_for('.index') }}">Return to lobby</a>
+            </div>
+        </div>
+        <div class="card">
+            <p>Cross: {{ game.player_1_name }}</p>
+            <p>Naught: {{ game.player_2_name }}</p>
+            <p>Current: {{ game.current_turn_name }}</p>
+            <p>Game State: {{ game.tictactoe.state.value }}</p>
+            <p>Winner name: {{ game.winner_name }}</p>
+            <p>Winning Cells: {{ game.tictactoe.winning_cells }}</p>
+            <a class="link" href="{{ url_for('.index') }}">Return to lobby</a>
+        </div>
+    </div>
 {% endblock %}

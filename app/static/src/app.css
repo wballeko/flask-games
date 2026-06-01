@@ -1,7 +1,7 @@
 ﻿@import "tailwindcss";
 
 .link {
-    @apply text-blue-600 underline
+    @apply text-blue-600 font-bold
 }
 
 .card {
