@@ -1,0 +1,11 @@
+﻿{
+  "dependencies": {
+    "@tailwindcss/cli": "^4.2.2",
+    "tailwindcss": "^4.2.2",
+    "tailwind-scrollbar": "^4.0.2"
+  },
+  "scripts": {
+    "tailwind": "tailwindcss -i ./app/static/src/app.css -o ./app/static/dist/app.css",
+    "tailwind:watch": "tailwindcss -i ./app/static/src/app.css -o ./app/static/dist/app.css --watch"
+  }
+}
