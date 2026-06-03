@@ -1,5 +1,6 @@
 ﻿from flask import Blueprint, render_template, redirect, url_for, request, abort
 
+from app.services.TicTacToeService import TicTacToeService
 from domain.tictactoe import TicTacToeGame, TicTacToe
 from infrastructure.repositories.tictactoe_repository import TicTacToeRepository
 
@@ -12,7 +13,7 @@ tictactoe_routes = Blueprint(
 )
 
 repo = TicTacToeRepository()
-
+service = TicTacToeService(repo)
 
 def get_game_or_404(game_id: int) -> TicTacToeGame:
     game = repo.get_by_id(game_id)
@@ -38,19 +39,15 @@ def details(game_id):
 
 @tictactoe_routes.route('/create', methods=['POST'])
 def create():
-    tictactoe = TicTacToe()
-    new_game = TicTacToeGame(
-        player_1_name=request.form['player_1_name'],
-        player_2_name=request.form['player_2_name'],
-        tictactoe=tictactoe
+    game = service.create_game(
+        request.form['player_1_name'],
+        request.form['player_2_name'],
     )
-    game = repo.save(new_game)
     return redirect(url_for('.details', game_id=game.id))
 
 
 @tictactoe_routes.route('/<int:game_id>/turn/<int:row>/<int:col>', methods=['POST'])
 def turn(game_id, row, col):
-    game = get_game_or_404(game_id)
-    game.apply_turn(row, col)
-    game = repo.save(game)
+    get_game_or_404(game_id)
+    game = service.apply_turn(game_id, row, col)
     return redirect(url_for('.details', game_id=game.id))
