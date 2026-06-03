@@ -1,15 +1,4 @@
-﻿# Build
-FROM python:3-slim AS builder
-
-WORKDIR /code
-
-RUN apt-get update && apt-get install -y build-essential
-
-COPY requirements.txt .
-RUN pip install --no-cache-dir --prefix=/install -r requirements.txt
-
-# Final
-FROM python:3-slim
+﻿FROM python:3.13-slim
 
 WORKDIR /code
 
@@ -19,10 +8,18 @@ ENV PYTHONUNBUFFERED=1
 ENV FLASK_APP=run.py
 ENV FLASK_RUN_HOST=0.0.0.0
 
-COPY --from=builder /install /usr/local
+# Install uv
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 
+# Copy dependency files first for better Docker caching
+COPY pyproject.toml uv.lock ./
+
+# Install dependencies
+RUN uv sync --frozen --no-dev
+
+# Copy application code
 COPY . .
 
 EXPOSE 5000
 
-CMD ["flask", "run", "--debug"]
+CMD ["uv", "run", "flask", "run", "--debug"]
