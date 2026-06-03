@@ -9,13 +9,19 @@
         <div class="card mb-4">
             <h2 class="text-xl mb-2">Create Game</h2>
             <form action="./create" method="POST">
-                <label>
-                    <input type="text" name="player_1_name" placeholder="Enter player name 1">
-                </label>
-                <label>
-                    <input type="text" name="player_2_name" placeholder="Enter player name 2">
-                </label>
-                <input type="submit" value="Create">
+                <div class="flex gap-4">
+                    <label>
+                        <input class="p-2 border-black/20 border rounded-xl" type="text" name="player_1_name" placeholder="Enter player name 1">
+                    </label>
+                    <label>
+                        <input class="p-2 border-black/20 border rounded-xl" type="text" name="player_2_name" placeholder="Enter player name 2">
+                    </label>
+                    <div class="my-auto">
+                        <input class="w-4 h-4" type="checkbox" name="vs_com" id="vs_com">
+                        <label for="vs_com">vs COM?</label>
+                    </div>
+                    <input class="rounded-2xl px-4 py-2 hover:bg-indigo-700 transition bg-indigo-500 text-white text-bold cursor-pointer" type="submit" value="Create">
+                </div>
             </form>
         </div>
         <div class="card mb-4">

@@ -12,6 +12,7 @@ class TicTacToeGameRecord(SQLModel, table=True):
     player_1_name: str
     player_2_name: str
     turn_history_json: str
+    vs_com: bool
 
 
 class TicTacToeSerializer:
@@ -57,20 +58,24 @@ class TicTacToeSerializer:
             field_types.append(cls.map_character_field(character))
 
         size = 3
-        fields = [field_types[i:i + size] for i in range(0, len(field_types), size)]
+        fields = [field_types[i : i + size] for i in range(0, len(field_types), size)]
 
         return TicTacToe(fields=fields)
 
+    @staticmethod
     def serialize_turns(turns: list[TicTacToeTurn]) -> str:
-        return json.dumps([
-            {
-                "player": turn.player.value,
-                "row": turn.row,
-                "col": turn.col,
-            }
-            for turn in turns
-        ])
+        return json.dumps(
+            [
+                {
+                    "player": turn.player.value,
+                    "row": turn.row,
+                    "col": turn.col,
+                }
+                for turn in turns
+            ]
+        )
 
+    @staticmethod
     def deserialize_turns(data: str) -> list[TicTacToeTurn]:
         return [
             TicTacToeTurn(
@@ -89,26 +94,36 @@ SQLModel.metadata.create_all(engine)
 class TicTacToeRepository:
     @classmethod
     def _to_record(cls, tictactoe_game: TicTacToeGame) -> TicTacToeGameRecord:
-        tictactoe_serialized = TicTacToeSerializer.serialize_board(tictactoe_game.tictactoe)
-        tictactoe_turns_serialized = TicTacToeSerializer.serialize_turns(tictactoe_game.turn_history)
+        tictactoe_serialized = TicTacToeSerializer.serialize_board(
+            tictactoe_game.tictactoe
+        )
+        tictactoe_turns_serialized = TicTacToeSerializer.serialize_turns(
+            tictactoe_game.turn_history
+        )
         return TicTacToeGameRecord(
             id=tictactoe_game.id,
             player_1_name=tictactoe_game.player_1_name,
             player_2_name=tictactoe_game.player_2_name,
             tictactoe_serialized=tictactoe_serialized,
-            turn_history_json=tictactoe_turns_serialized
+            turn_history_json=tictactoe_turns_serialized,
+            vs_com=tictactoe_game.vs_com,
         )
 
     @classmethod
     def _to_domain(cls, tictactoe_game_record: TicTacToeGameRecord) -> TicTacToeGame:
-        tictactoe_deserialized = TicTacToeSerializer.deserialize_board(tictactoe_game_record.tictactoe_serialized)
-        tictactoe_turns_deserialized = TicTacToeSerializer.deserialize_turns(tictactoe_game_record.turn_history_json)
+        tictactoe_deserialized = TicTacToeSerializer.deserialize_board(
+            tictactoe_game_record.tictactoe_serialized
+        )
+        tictactoe_turns_deserialized = TicTacToeSerializer.deserialize_turns(
+            tictactoe_game_record.turn_history_json
+        )
         return TicTacToeGame(
             id=tictactoe_game_record.id,
             player_1_name=tictactoe_game_record.player_1_name,
             player_2_name=tictactoe_game_record.player_2_name,
             tictactoe=tictactoe_deserialized,
-            turn_history=tictactoe_turns_deserialized
+            turn_history=tictactoe_turns_deserialized,
+            vs_com=tictactoe_game_record.vs_com,
         )
 
     def delete(self, id: int) -> bool:
@@ -138,8 +153,7 @@ class TicTacToeRepository:
 
     def get_all(self) -> list[TicTacToeGame]:
         with Session(engine) as session:
-            records = session.exec(select(TicTacToeGameRecord).order_by(TicTacToeGameRecord.id.desc())).all()
-            return [
-                self._to_domain(record)
-                for record in records
-            ]
+            records = session.exec(
+                select(TicTacToeGameRecord).order_by(TicTacToeGameRecord.id.desc())
+            ).all()
+            return [self._to_domain(record) for record in records]

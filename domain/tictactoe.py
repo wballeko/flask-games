@@ -1,5 +1,6 @@
 ﻿from dataclasses import dataclass, field
 from enum import Enum
+import random
 from typing import Optional
 
 
@@ -20,10 +21,18 @@ class TicTacToeState(Enum):
 class TicTacToe:
     fields: list[list[TicTacToeFieldType]] = field(
         default_factory=lambda: [
-            [TicTacToeFieldType.EMPTY for _ in range(3)]
-            for _ in range(3)
+            [TicTacToeFieldType.EMPTY for _ in range(3)] for _ in range(3)
         ]
     )
+
+    @property
+    def available_fields(self) -> list[tuple[int, int]]:
+        return [
+            (col, row)
+            for row in range(3)
+            for col in range(3)
+            if self.fields[row][col] == TicTacToeFieldType.EMPTY
+        ]
 
     @property
     def current_turn(self) -> TicTacToeFieldType:
@@ -31,21 +40,15 @@ class TicTacToe:
             return TicTacToeFieldType.EMPTY
 
         crosses = sum(
-            field == TicTacToeFieldType.CROSS
-            for row in self.fields
-            for field in row
+            field == TicTacToeFieldType.CROSS for row in self.fields for field in row
         )
 
         naughts = sum(
-            field == TicTacToeFieldType.NAUGHT
-            for row in self.fields
-            for field in row
+            field == TicTacToeFieldType.NAUGHT for row in self.fields for field in row
         )
 
         return (
-            TicTacToeFieldType.NAUGHT
-            if crosses > naughts
-            else TicTacToeFieldType.CROSS
+            TicTacToeFieldType.NAUGHT if crosses > naughts else TicTacToeFieldType.CROSS
         )
 
     def turn_is_valid(self, row: int, col: int) -> bool:
@@ -73,24 +76,30 @@ class TicTacToe:
 
         # Columns
         for col in range(3):
-            lines.append([
-                self.fields[0][col],
-                self.fields[1][col],
-                self.fields[2][col],
-            ])
+            lines.append(
+                [
+                    self.fields[0][col],
+                    self.fields[1][col],
+                    self.fields[2][col],
+                ]
+            )
 
         # Diagonals
-        lines.append([
-            self.fields[0][0],
-            self.fields[1][1],
-            self.fields[2][2],
-        ])
+        lines.append(
+            [
+                self.fields[0][0],
+                self.fields[1][1],
+                self.fields[2][2],
+            ]
+        )
 
-        lines.append([
-            self.fields[0][2],
-            self.fields[1][1],
-            self.fields[2][0],
-        ])
+        lines.append(
+            [
+                self.fields[0][2],
+                self.fields[1][1],
+                self.fields[2][0],
+            ]
+        )
 
         for line in lines:
             if all(field == TicTacToeFieldType.CROSS for field in line):
@@ -100,9 +109,7 @@ class TicTacToe:
                 return TicTacToeState.NAUGHT_WON
 
         if all(
-                field != TicTacToeFieldType.EMPTY
-                for row in self.fields
-                for field in row
+            field != TicTacToeFieldType.EMPTY for row in self.fields for field in row
         ):
             return TicTacToeState.DRAW
 
@@ -133,6 +140,7 @@ class TicTacToe:
 
         return None
 
+
 @dataclass
 class TicTacToeTurn:
     col: int
@@ -147,20 +155,17 @@ class TicTacToeGame:
     tictactoe: TicTacToe
     turn_history: list[TicTacToeTurn] = field(default_factory=list)
     id: Optional[int] = None
+    vs_com: bool = False
 
-    def apply_turn(self, row: int, col: int) -> TicTacToeTurn | None:
+    def apply_turn(self, row: int, col: int) -> bool:
         turn_is_valid = self.tictactoe.turn_is_valid(row, col)
         if turn_is_valid:
             current_player = self.tictactoe.current_turn
             self.tictactoe.apply_turn(row, col)
             self.turn_history.append(
-                TicTacToeTurn(
-                    col=col,
-                    row=row,
-                    player=current_player
-                )
+                TicTacToeTurn(col=col, row=row, player=current_player)
             )
-
+        return turn_is_valid
 
     def convert_type_to_player_name(self, field_type: TicTacToeFieldType) -> str:
         match field_type:
@@ -196,3 +201,9 @@ class TicTacToeGame:
                 return self.player_2_name
             case _:
                 raise NotImplementedError()
+
+
+class TicTacToeComputerPlayer:
+    def choose_move(self, board: TicTacToe) -> tuple[int, int]:
+        valid_moves = board.available_fields
+        return random.choice(valid_moves)
