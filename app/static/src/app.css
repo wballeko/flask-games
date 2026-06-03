@@ -1,5 +1,10 @@
 ﻿@import "tailwindcss";
 
+body {
+    font-family: "Oxygen", sans-serif;
+    @apply bg-linear-to-r from-indigo-300 to-blue-400
+}
+
 .link {
     @apply text-blue-600 font-bold
 }

@@ -133,13 +133,43 @@ class TicTacToe:
 
         return None
 
+@dataclass
+class TicTacToeTurn:
+    col: int
+    row: int
+    player: TicTacToeFieldType
+
 
 @dataclass
 class TicTacToeGame:
     player_1_name: str
     player_2_name: str
     tictactoe: TicTacToe
+    turn_history: list[TicTacToeTurn] = field(default_factory=list)
     id: Optional[int] = None
+
+    def apply_turn(self, row: int, col: int) -> TicTacToeTurn | None:
+        turn_is_valid = self.tictactoe.turn_is_valid(row, col)
+        if turn_is_valid:
+            current_player = self.tictactoe.current_turn
+            self.tictactoe.apply_turn(row, col)
+            self.turn_history.append(
+                TicTacToeTurn(
+                    col=col,
+                    row=row,
+                    player=current_player
+                )
+            )
+
+
+    def convert_type_to_player_name(self, field_type: TicTacToeFieldType) -> str:
+        match field_type:
+            case TicTacToeFieldType.CROSS:
+                return self.player_1_name
+            case TicTacToeFieldType.NAUGHT:
+                return self.player_2_name
+            case _:
+                return ""
 
     @property
     def current_turn_name(self) -> str:
@@ -166,5 +196,3 @@ class TicTacToeGame:
                 return self.player_2_name
             case _:
                 raise NotImplementedError()
-
-

@@ -60,6 +60,18 @@
             <p>Game State: {{ game.tictactoe.state.value }}</p>
             <p>Winner name: {{ game.winner_name }}</p>
             <p>Winning Cells: {{ game.tictactoe.winning_cells }}</p>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Player</th>
+                        <th>Column</th>
+                        <th>Row</th>
+                    </tr>
+                </thead>
+            {% for turn in game.turn_history %}
+                <tr><td>{{ game.convert_type_to_player_name(turn.player) }}</td><td>{{ turn.col }}</td><td>{{ turn.row }}</td></tr>
+            {% endfor %}
+            </table>
             <a class="link" href="{{ url_for('.index') }}">Return to lobby</a>
         </div>
     </div>

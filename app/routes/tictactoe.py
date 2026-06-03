@@ -51,6 +51,6 @@ def create():
 @tictactoe_routes.route('/<int:game_id>/turn/<int:row>/<int:col>', methods=['POST'])
 def turn(game_id, row, col):
     game = get_game_or_404(game_id)
-    game.tictactoe.apply_turn(row, col)
+    game.apply_turn(row, col)
     game = repo.save(game)
     return redirect(url_for('.details', game_id=game.id))
