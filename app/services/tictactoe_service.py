@@ -28,11 +28,11 @@ class TicTacToeService:
 
     def _apply_computer_turn(self, tictactoe: TicTacToeGame):
         computer = TicTacToeComputerPlayer()
-        col, row = computer.choose_move(tictactoe.tictactoe)
-        is_valid = tictactoe.apply_turn(col, row)
+        row, col = computer.choose_move(tictactoe.tictactoe)
+        is_valid = tictactoe.apply_turn(row, col)
         while not is_valid:
-            col, row = computer.choose_move(tictactoe.tictactoe)
-            is_valid = tictactoe.apply_turn(col, row)
+            row, col = computer.choose_move(tictactoe.tictactoe)
+            is_valid = tictactoe.apply_turn(row, col)
 
     def apply_turn(
         self,

@@ -28,7 +28,7 @@ class TicTacToe:
     @property
     def available_fields(self) -> list[tuple[int, int]]:
         return [
-            (col, row)
+            (row, col)
             for row in range(3)
             for col in range(3)
             if self.fields[row][col] == TicTacToeFieldType.EMPTY
